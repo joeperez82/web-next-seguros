@@ -602,58 +602,66 @@
     </div>
 
     <!-- Scripts Funcionales e Integración de Vapi usando ES Modules -->
-   <script src="https://cdn.jsdelivr.net/npm/@vapi-ai/web@1.0.1/dist/index.umd.min.js"></script>
+   <script
+      src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js"
+      defer
+      async
+    ></script>
 
     <script>
-      // 2. Credenciales de Next Seguros
+      // 2. Credenciales de tu asistente Santi en Next Seguros
       const assistantId = "fc87ee20-e83f-44b2-a0f4-de7d9e319ecf";
       const apiKey = "19824c02-6be2-4cac-b246-195201135083";
 
-      let vapiInstance = null;
-
-      // 3. Inicialización segura del canal de voz buscando el objeto global correcto
-      function initVapi() {
-          try {
-              // Buscamos la clase en los diferentes espacios que usan los CDN empaquetados
-              const VapiClass = window.Vapi || (window.vapi && window.vapi.Vapi) || window.VapiWeb;
-              
-              if (VapiClass) {
-                  vapiInstance = new VapiClass(apiKey);
-                  console.log("Santi: Sistema de voz inicializado con éxito.");
-                  
-                  // Escucha de eventos para depuración
-                  vapiInstance.on('call-start', () => console.log('Llamada con Santi iniciada en vivo.'));
-                  vapiInstance.on('call-end', () => console.log('Llamada con Santi finalizada.'));
-                  vapiInstance.on('error', (err) => console.error('Error en el agente de voz:', err));
-              } else {
-                  console.error("El SDK de Vapi no se ha mapeado correctamente en el objeto window.");
-              }
-          } catch (error) {
-              console.error("Error al conectar con la infraestructura de Vapi:", error);
+      // 3. Inicialización nativa automática al cargar la página
+      window.addEventListener('load', () => {
+          // Si el SDK ya está en memoria, configuramos los parámetros de Next Seguros
+          if (window.vapiSDK && window.vapiSDK.run) {
+              window.vapiSDK.run({
+                  apiKey: apiKey,
+                  assistant: assistantId,
+                  config: {
+                      position: "bottom-right"
+                  }
+              });
+              console.log("Santi: El motor de voz de Vapi se ha acoplado.");
           }
-      }
+      });
 
-      // Sincronización de la carga
-      if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', initVapi);
-      } else {
-          initVapi();
-      }
-
-      // 4. Función de activación vinculada a tus botones (onclick="startVapiCall()")
+      // 4. Función global vinculada a todos tus botones personalizados (onclick="startVapiCall()")
       window.startVapiCall = function() {
-          if (vapiInstance) {
-              console.log("Conectando con el asistente Santi... Abriendo micrófono.");
-              vapiInstance.start(assistantId);
-          } else {
-              console.warn("Intentando inicialización forzada de emergencia...");
-              const VapiClass = window.Vapi || (window.vapi && window.vapi.Vapi) || window.VapiWeb;
-              if (VapiClass) {
-                  vapiInstance = new VapiClass(apiKey);
-                  vapiInstance.start(assistantId);
-              } else {
-                  alert("Por favor, asegúrate de que tu conexión permite cargar el SDK de Vapi e inténtalo de nuevo.");
+          // Intentamos despertar al asistente usando la API de control del script oficial
+          if (window.vapiSDK) {
+              if (typeof window.vapiSDK.open === 'function') {
+                  console.log("Abriendo canal de voz mediante API...");
+                  window.vapiSDK.open();
+                  return;
               }
+              if (typeof window.vapiSDK.toggle === 'function') {
+                  console.log("Alternando estado del canal de voz...");
+                  window.vapiSDK.toggle();
+                  return;
+              }
+          }
+
+          // Si las funciones nativas directas están restringidas, buscamos el botón oculto que inyecta Vapi y lo pulsamos
+          const nativeVapiBtn = document.getElementById('vapi-support-btn') || 
+                                document.querySelector('.vapi-btn') || 
+                                document.querySelector('[id^="vapi-"]');
+          
+          if (nativeVapiBtn) {
+              console.log("Simulando interacción segura con el disparador de Vapi...");
+              nativeVapiBtn.click();
+          } else {
+              // Fallback de reintento por si el script externo aún se está descargando
+              console.warn("Sincronizando el motor de voz... Reintentando llamada.");
+              setTimeout(() => {
+                  if (window.vapiSDK && window.vapiSDK.run) {
+                      window.vapiSDK.run({ apiKey: apiKey, assistant: assistantId, config: { position: "bottom-right" } });
+                  }
+                  const retryBtn = document.getElementById('vapi-support-btn') || document.querySelector('.vapi-btn');
+                  if (retryBtn) retryBtn.click();
+              }, 600);
           }
       };
     </script>
