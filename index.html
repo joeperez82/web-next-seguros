@@ -602,52 +602,65 @@
     </div>
 
     <!-- Scripts Funcionales e Integración de Vapi usando ES Modules -->
-    <script src="https://cdn.jsdelivr.net/npm/@vapi-ai/web@1.0.1/dist/index.umd.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js"
+      defer
+      async
+    </script>
+
     <script>
       // 1. Configuración de credenciales de Next Seguros
-      const assistantId = "198537b0-b0a3-403a-bf7e-adeeff1f919a";
-      const apiKey = "19824c02-6be2-4cac-b246-195201135083"; // Asegúrate de que sea tu Public Key
+      const assistantId = "fc87ee20-e83f-44b2-a0f4-de7d9e319ecf";
+      const apiKey = "19824c02-6be2-4cac-b246-195201135083";
 
-      let vapiInstance = null;
-
-      // 2. Inicialización del SDK de Vapi al cargar la página
-      try {
-          // El script de arriba expone la clase 'Vapi' de forma global en la ventana
-          if (typeof Vapi !== 'undefined') {
-              vapiInstance = new Vapi(apiKey);
-              console.log("Santi: El canal de voz se ha configurado correctamente.");
-          } else {
-              console.error("No se pudo cargar el SDK de Vapi desde el servidor central.");
+      // 2. Inicialización oficial de Vapi al cargar la página
+      window.addEventListener('load', () => {
+          if (window.vapiSDK && window.vapiSDK.run) {
+              window.vapiSDK.run({
+                  apiKey: apiKey,
+                  assistant: assistantId,
+                  config: {
+                      // Mantenemos la posición pero ocultamos el botón nativo feo de Vapi
+                      // para usar tu propio diseño premium de Santi
+                      position: "bottom-right"
+                  }
+              });
+              console.log("SDK de Vapi inicializado con éxito.");
           }
-      } catch (error) {
-          console.error("Error durante la inicialización de la interfaz de voz:", error);
-      }
+      });
 
-      // 3. Función global que ejecutan los botones onclick="startVapiCall()"
+      // 3. Función vinculada a tus botones personalizados (onclick="startVapiCall()")
       window.startVapiCall = function() {
-          if (vapiInstance) {
-              console.log("Conectando con el asistente Santi...");
-              
-              // Iniciamos la conversación abriendo el flujo de audio del micrófono
-              vapiInstance.start(assistantId);
+          // Buscamos el botón nativo que inyecta Vapi en el DOM y le hacemos clic simulado
+          const vapiButton = document.getElementById('vapi-support-btn') || document.querySelector('.vapi-btn') || document.querySelector('[id^="vapi-"]');
+          
+          if (vapiButton) {
+              console.log("Activando asistente de voz Santi...");
+              vapiButton.click();
           } else {
-              console.error("La instancia de voz no está activa en este momento.");
+              // Si el script tarda un poco en renderizar el botón de fondo, usamos el método directo
+              if (window.vapiSDK && window.vapiSDK.open) {
+                  window.vapiSDK.open();
+              } else {
+                  console.warn("El asistente aún se está emparejando. Por favor, espera un segundo.");
+              }
           }
       };
+    </script>
 
-      // 4. Gestión de eventos de audio opcionales para control en consola
-      if (vapiInstance) {
-          vapiInstance.on('call-start', () => {
-              console.log('Conversación de voz con Santi iniciada activamente.');
-          });
-
-          vapiInstance.on('call-end', () => {
-              console.log('Conversación con Santi finalizada.');
-          });
-
-          vapiInstance.on('error', (err) => {
-              console.error('Error reportado por el asistente de voz:', err);
-          });
+    <script>
+      // Lógica de apertura y cierre de Preguntas Frecuentes (FAQ)
+      function toggleFaq(element) {
+          const content = element.querySelector('.faq-content');
+          const icon = element.querySelector('.fa-chevron-down');
+          
+          if (content.style.maxHeight === '0px' || !content.style.maxHeight) {
+              content.style.maxHeight = content.scrollHeight + 'px';
+              icon.style.transform = 'rotate(180deg)';
+          } else {
+              content.style.maxHeight = '0px';
+              icon.style.transform = 'rotate(0deg)';
+          }
       }
     </script>
 
