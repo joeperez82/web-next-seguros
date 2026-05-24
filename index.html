@@ -604,15 +604,15 @@
 
     <!-- Scripts Funcionales e Integración de Vapi usando ES Modules -->
     <script>
-      // 1. Configuración de tus credenciales (REEMPLAZA CON TU LLAVE PÚBLICA)
-      const assistantId = "198537b0-b0a3-403a-bf7e-adeeff1f919a";
-      const apiKey = "19824c02-6be2-4cac-b246-195201135083"; // <-- ¡IMPORTANTE! Copia la "Public Key" desde tu Dashboard de Vapi
+      // 1. Configuración de credenciales de Next Seguros
+      const assistantId = "fc87ee20-e83f-44b2-a0f4-de7d9e319ecf";
+      const apiKey = "19824c02-6be2-4cac-b246-195201135083"; // <-- RECUERDA: Debe ser tu PUBLIC key del Dashboard de Vapi
 
       let vapiInstance = null;
 
-      // 2. Carga asíncrona del SDK oficial de Vapi para entornos Web
+      // 2. Inyección del script oficial de Vapi para entornos web estáticos
       (function (d, t) {
-          var g = document.createElement(t),
+          var g = d.createElement(t),
               s = d.getElementsByTagName(t)[0];
           g.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
           g.defer = true;
@@ -620,26 +620,43 @@
           s.parentNode.insertBefore(g, s);
 
           g.onload = function () {
-              // Inicializamos el SDK de Vapi en la ventana global
-              console.log("Santi: El canal de voz se está vinculando...");
+              console.log("SDK de Vapi vinculado correctamente.");
           };
       })(document, "script");
 
-      // 3. Función global para activar la llamada desde los botones
+      // 3. Función global que ejecutan los botones onclick="startVapiCall()"
       window.startVapiCall = function() {
-          // Comprobamos si el SDK de Vapi de ventana está disponible
+          // Validamos si el SDK de Vapi se encuentra listo en la ventana
           if (window.vapiSDK && window.vapiSDK.run) {
-              console.log("Conectando con el asistente Santi...");
+              console.log("Estableciendo comunicación de voz con Santi...");
               
-              // Ejecuta la llamada abriendo el canal de audio del navegador
+              // Ejecutamos la sesión abriendo los flujos de audio
               vapiInstance = window.vapiSDK.run({
                   apiKey: apiKey,
                   assistant: assistantId
               });
           } else {
-              console.error("El SDK de Vapi aún no se ha cargado en el navegador.");
+              // Si el usuario hace clic muy rápido antes de que termine de cargar el CDN
+              console.warn("El SDK todavía no se ha cargado por completo. Reintentando...");
+              setTimeout(window.startVapiCall, 500);
           }
       };
+    </script>
+
+    <script>
+      // Lógica de apertura y cierre de Preguntas Frecuentes (FAQ)
+      function toggleFaq(element) {
+          const content = element.querySelector('.faq-content');
+          const icon = element.querySelector('.fa-chevron-down');
+          
+          if (content.style.maxHeight === '0px' || !content.style.maxHeight) {
+              content.style.maxHeight = content.scrollHeight + 'px';
+              icon.style.transform = 'rotate(180deg)';
+          } else {
+              content.style.maxHeight = '0px';
+              icon.style.transform = 'rotate(0deg)';
+          }
+      }
     </script>
 
     <!-- Script clásico para elementos de UI que no requieren ES Modules -->
