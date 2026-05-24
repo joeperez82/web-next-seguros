@@ -1,4 +1,3 @@
-
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -603,44 +602,69 @@
     </div>
 
     <!-- Scripts Funcionales e Integración de Vapi usando ES Modules -->
+    <script src="https://cdn.jsdelivr.net/npm/@vapi-ai/web@1.0.1/dist/index.umd.min.js"></script>
     <script>
       // 1. Configuración de credenciales de Next Seguros
-      const assistantId = "fc87ee20-e83f-44b2-a0f4-de7d9e319ecf";
-      const apiKey = "19824c02-6be2-4cac-b246-195201135083"; // <-- RECUERDA: Debe ser tu PUBLIC key del Dashboard de Vapi
+      const assistantId = "198537b0-b0a3-403a-bf7e-adeeff1f919a";
+      const apiKey = "19824c02-6be2-4cac-b246-195201135083"; // Asegúrate de que sea tu Public Key
 
       let vapiInstance = null;
 
-      // 2. Inyección del script oficial de Vapi para entornos web estáticos
-      (function (d, t) {
-          var g = d.createElement(t),
-              s = d.getElementsByTagName(t)[0];
-          g.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-          g.defer = true;
-          g.async = true;
-          s.parentNode.insertBefore(g, s);
-
-          g.onload = function () {
-              console.log("SDK de Vapi vinculado correctamente.");
-          };
-      })(document, "script");
+      // 2. Inicialización del SDK de Vapi al cargar la página
+      try {
+          // El script de arriba expone la clase 'Vapi' de forma global en la ventana
+          if (typeof Vapi !== 'undefined') {
+              vapiInstance = new Vapi(apiKey);
+              console.log("Santi: El canal de voz se ha configurado correctamente.");
+          } else {
+              console.error("No se pudo cargar el SDK de Vapi desde el servidor central.");
+          }
+      } catch (error) {
+          console.error("Error durante la inicialización de la interfaz de voz:", error);
+      }
 
       // 3. Función global que ejecutan los botones onclick="startVapiCall()"
       window.startVapiCall = function() {
-          // Validamos si el SDK de Vapi se encuentra listo en la ventana
-          if (window.vapiSDK && window.vapiSDK.run) {
-              console.log("Estableciendo comunicación de voz con Santi...");
+          if (vapiInstance) {
+              console.log("Conectando con el asistente Santi...");
               
-              // Ejecutamos la sesión abriendo los flujos de audio
-              vapiInstance = window.vapiSDK.run({
-                  apiKey: apiKey,
-                  assistant: assistantId
-              });
+              // Iniciamos la conversación abriendo el flujo de audio del micrófono
+              vapiInstance.start(assistantId);
           } else {
-              // Si el usuario hace clic muy rápido antes de que termine de cargar el CDN
-              console.warn("El SDK todavía no se ha cargado por completo. Reintentando...");
-              setTimeout(window.startVapiCall, 500);
+              console.error("La instancia de voz no está activa en este momento.");
           }
       };
+
+      // 4. Gestión de eventos de audio opcionales para control en consola
+      if (vapiInstance) {
+          vapiInstance.on('call-start', () => {
+              console.log('Conversación de voz con Santi iniciada activamente.');
+          });
+
+          vapiInstance.on('call-end', () => {
+              console.log('Conversación con Santi finalizada.');
+          });
+
+          vapiInstance.on('error', (err) => {
+              console.error('Error reportado por el asistente de voz:', err);
+          });
+      }
+    </script>
+
+    <script>
+      // Lógica de apertura y cierre de Preguntas Frecuentes (FAQ)
+      function toggleFaq(element) {
+          const content = element.querySelector('.faq-content');
+          const icon = element.querySelector('.fa-chevron-down');
+          
+          if (content.style.maxHeight === '0px' || !content.style.maxHeight) {
+              content.style.maxHeight = content.scrollHeight + 'px';
+              icon.style.transform = 'rotate(180deg)';
+          } else {
+              content.style.maxHeight = '0px';
+              icon.style.transform = 'rotate(0deg)';
+          }
+      }
     </script>
 
     <script>
