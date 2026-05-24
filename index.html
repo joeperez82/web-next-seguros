@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -6,8 +6,6 @@
     <title>Next Seguros | Seguros de Viaje de Aventura, Trekking y Cultura</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- SDK de Vapi optimizado para navegador -->
-    <script src="https://cdn.jsdelivr.net/npm/@vapi-ai/web@1.0.1/dist/index.umd.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Outfit', sans-serif; scroll-behavior: smooth; }
@@ -604,7 +602,51 @@
         </div>
     </div>
 
-    <!-- Scripts Funcionales -->
+    <!-- Scripts Funcionales e Integración de Vapi usando ES Modules -->
+    <script type="module">
+      // Importamos la versión estable del SDK de Vapi utilizando ES Modules directamente desde jsDelivr
+      import Vapi from "https://cdn.jsdelivr.net/npm/@vapi-ai/web@1.0.1/+esm";
+
+      const assistantId = "198537b0-b0a3-403a-bf7e-adeeff1f919a";
+      const apiKey = "19824c02-6be2-4cac-b246-195201135083";
+
+      let vapiInstance = null;
+
+      try {
+          // Inicializamos la conexión directamente
+          vapiInstance = new Vapi(apiKey);
+          console.log("Santi: El canal de voz se ha configurado.");
+      } catch (e) {
+          console.error("Error al inicializar Vapi:", e);
+      }
+
+      // Hacemos que la función startVapiCall sea de ámbito global (window)
+      // para que siga respondiendo correctamente a los eventos onclick en el HTML.
+      window.startVapiCall = function() {
+          if (vapiInstance) {
+              console.log("Conectando con el asistente Santi...");
+              vapiInstance.start(assistantId);
+          } else {
+              console.error("No se pudo iniciar la conversación de voz porque la instancia no está activa.");
+          }
+      };
+
+      if (vapiInstance) {
+          vapiInstance.on('call-start', () => {
+              console.log('Conversación de voz con Santi iniciada.');
+          });
+
+          vapiInstance.on('call-end', () => {
+              console.log('Conversación con Santi finalizada.');
+          });
+
+          vapiInstance.on('error', (err) => {
+              console.error('Error de voz reportado por el asistente:', err);
+          });
+      }
+    </script>
+
+    <!-- Script clásico para elementos de UI que no requieren ES Modules -->
     <script>
       // Lógica de Preguntas Frecuentes
       function toggleFaq(element) {
@@ -617,40 +659,6 @@
           } else {
               content.style.maxHeight = '0px';
               icon.style.transform = 'rotate(0deg)';
-          }
-      }
-
-      // Integración de Vapi por Voz con Santi
-      let vapi = null;
-      const assistantId = "198537b0-b0a3-403a-bf7e-adeeff1f919a";
-      const apiKey = "19824c02-6be2-4cac-b246-195201135083";
-
-      function initSanti() {
-          try {
-              const VapiClass = window.Vapi || (window.vapiSDK ? window.vapiSDK.Vapi : null);
-              
-              if (VapiClass && !vapi) {
-                  vapi = new VapiClass(apiKey);
-                  console.log("Santi: Sistema de voz cargado de manera correcta.");
-              } else if (!vapi) {
-                  setTimeout(initSanti, 300);
-              }
-          } catch (e) {
-              console.error("Error al preparar a Santi:", e);
-          }
-      }
-
-      window.onload = initSanti;
-
-      async function startVapiCall() {
-          if (vapi) {
-              try {
-                  vapi.start(assistantId);
-              } catch (err) {
-                  console.error("Error al iniciar la llamada:", err);
-              }
-          } else {
-              initSanti();
           }
       }
     </script>
