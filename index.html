@@ -606,16 +606,19 @@
 
     <script>
       // 2. Credenciales de Next Seguros
-      const assistantId = "fc87ee20-e83f-44b2-a0f4-de7d9e319ecf";
+      const assistantId = "198537b0-b0a3-403a-bf7e-adeeff1f919a";
       const apiKey = "19824c02-6be2-4cac-b246-195201135083";
 
       let vapiInstance = null;
 
-      // 3. Inicialización segura del canal de voz
+      // 3. Inicialización segura del canal de voz buscando el objeto global correcto
       function initVapi() {
           try {
-              if (typeof Vapi !== 'undefined') {
-                  vapiInstance = new Vapi(apiKey);
+              // Buscamos la clase en los diferentes espacios que usan los CDN empaquetados
+              const VapiClass = window.Vapi || (window.vapi && window.vapi.Vapi) || window.VapiWeb;
+              
+              if (VapiClass) {
+                  vapiInstance = new VapiClass(apiKey);
                   console.log("Santi: Sistema de voz inicializado con éxito.");
                   
                   // Escucha de eventos para depuración
@@ -623,14 +626,14 @@
                   vapiInstance.on('call-end', () => console.log('Llamada con Santi finalizada.'));
                   vapiInstance.on('error', (err) => console.error('Error en el agente de voz:', err));
               } else {
-                  console.error("El SDK de Vapi no está disponible en el navegador.");
+                  console.error("El SDK de Vapi no se ha mapeado correctamente en el objeto window.");
               }
           } catch (error) {
               console.error("Error al conectar con la infraestructura de Vapi:", error);
           }
       }
 
-      // Aseguramos que se inicialice en cuanto la página esté lista
+      // Sincronización de la carga
       if (document.readyState === 'loading') {
           document.addEventListener('DOMContentLoaded', initVapi);
       } else {
@@ -643,12 +646,13 @@
               console.log("Conectando con el asistente Santi... Abriendo micrófono.");
               vapiInstance.start(assistantId);
           } else {
-              console.warn("Reintentando conexión con Santi...");
-              if (typeof Vapi !== 'undefined') {
-                  vapiInstance = new Vapi(apiKey);
+              console.warn("Intentando inicialización forzada de emergencia...");
+              const VapiClass = window.Vapi || (window.vapi && window.vapi.Vapi) || window.VapiWeb;
+              if (VapiClass) {
+                  vapiInstance = new VapiClass(apiKey);
                   vapiInstance.start(assistantId);
               } else {
-                  alert("El asistente de voz se está sincronizando. Por favor, espera 2 segundos e inténtalo de nuevo.");
+                  alert("Por favor, asegúrate de que tu conexión permite cargar el SDK de Vapi e inténtalo de nuevo.");
               }
           }
       };
