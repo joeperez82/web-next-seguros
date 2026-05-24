@@ -47,9 +47,7 @@
                 <span class="hidden md:flex items-center gap-2 text-sm font-bold text-slate-700 mr-2">
                     <i class="fas fa-phone-alt text-next-cyan"></i> Asistencia internacional: <span class="text-slate-950">#360</span>
                 </span>
-                <button onclick="startVapiCall()" class="accent-gradient text-white px-5 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-cyan-100 transition text-sm flex items-center gap-2">
-                    <i class="fas fa-phone-alt"></i> Asesoría por voz
-                </button>
+              
             </div>
         </div>
     </nav>
@@ -73,8 +71,7 @@
                 </p>
                 
                 <div class="pt-4 flex flex-wrap gap-4 items-center">
-                    <button onclick="startVapiCall()" class="accent-gradient text-white font-bold px-8 py-4 rounded-2xl hover:scale-105 transition-all shadow-xl shadow-cyan-900/40 flex items-center gap-3">
-                        <i class="fas fa-microphone"></i> Hablar con Santi
+                    
                     </button>
                     <a href="#productos" class="border border-white/20 text-white font-bold px-8 py-4 rounded-2xl hover:bg-white/10 transition-colors">
                         Ver planes y coberturas
@@ -207,9 +204,7 @@
                         </div>
                     </div>
                     <div class="p-8 pt-0">
-                        <button onclick="startVapiCall()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl text-sm transition flex items-center justify-center gap-2">
-                            <i class="fas fa-phone-alt text-next-cyan"></i> Consultar con Santi
-                        </button>
+                        
                     </div>
                 </div>
 
@@ -249,9 +244,7 @@
                         </div>
                     </div>
                     <div class="p-8 pt-0">
-                        <button onclick="startVapiCall()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl text-sm transition flex items-center justify-center gap-2">
-                            <i class="fas fa-phone-alt text-next-cyan"></i> Consultar con Santi
-                        </button>
+                        
                     </div>
                 </div>
 
@@ -291,9 +284,7 @@
                         </div>
                     </div>
                     <div class="p-8 pt-0">
-                        <button onclick="startVapiCall()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl text-sm transition flex items-center justify-center gap-2">
-                            <i class="fas fa-phone-alt text-next-cyan"></i> Consultar con Santi
-                        </button>
+                        
                     </div>
                 </div>
             </div>
@@ -332,9 +323,7 @@
                         </div>
                     </div>
                     <div class="p-8 pt-0">
-                        <button onclick="startVapiCall()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl text-sm transition flex items-center justify-center gap-2">
-                            <i class="fas fa-phone-alt text-next-cyan"></i> Consultar con Santi
-                        </button>
+                        
                     </div>
                 </div>
 
@@ -366,9 +355,7 @@
                         </div>
                     </div>
                     <div class="p-8 pt-0">
-                        <button onclick="startVapiCall()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl text-sm transition flex items-center justify-center gap-2">
-                            <i class="fas fa-phone-alt text-next-cyan"></i> Consultar con Santi
-                        </button>
+                        
                     </div>
                 </div>
             </div>
@@ -475,9 +462,7 @@
                     Santi es nuestro especialista en planificación y seguridad para rutas de aventura. Si necesitas aclarar dudas específicas sobre el plan Platinium, el Europlan o cualquier aspecto de la cobertura, él te guiará por voz en tiempo real.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 pt-2">
-                    <button onclick="startVapiCall()" class="accent-gradient text-white font-bold px-10 py-4 rounded-2xl hover:scale-105 transition-all shadow-xl shadow-cyan-100 flex items-center justify-center gap-3">
-                        <i class="fas fa-phone-alt"></i> Hablar con Santi ahora
-                    </button>
+                    
                     <a href="#productos" class="border border-slate-200 text-slate-700 font-bold px-8 py-4 rounded-2xl hover:bg-slate-50 transition-colors flex items-center justify-center">
                         Comparar límites de planes
                     </a>
@@ -585,24 +570,28 @@
     </footer>
 
     <!-- Widget Flotante de Santi -->
-    <div id="vapi-santi-trigger" onclick="startVapiCall()" class="fixed bottom-8 right-8 z-[60] cursor-pointer group">
-        <div class="flex items-center gap-4 bg-next-dark p-2 pr-6 rounded-full shadow-2xl border border-next-cyan/30 hover:shadow-next-cyan/50 transition-all hover:-translate-y-1 santi-pulse text-white">
-            <div class="relative">
-                <img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=150&h=150&q=80" 
-                     alt="Asesor Santi" 
-                     class="w-14 h-14 rounded-full object-cover border-2 border-next-cyan">
-                <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-next-dark rounded-full"></div>
-            </div>
-            <div>
-                <p class="text-[10px] font-bold text-next-cyan uppercase tracking-widest leading-none mb-1 text-left tracking-tighter">Asistente</p>
-                <p class="text-sm font-bold leading-tight">Habla con Santi</p>
-                <p class="text-[11px] text-slate-400 italic font-light">"Respaldo en tu ruta"</p>
-            </div>
-        </div>
-    </div>
+     <script>
+      (function (d, t) {
+          var g = d.createElement(t),
+              s = d.getElementsByTagName(t)[0];
+          g.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+          g.defer = true;
+          g.async = true;
+          s.parentNode.insertBefore(g, s);
 
-    <!-- Scripts Funcionales e Integración de Vapi usando ES Modules -->
-   <script>
+          g.onload = function () {
+              window.vapiSDK.run({
+                  apiKey: "19824c02-6be2-4cac-b246-195201135083",
+                  assistant: "fc87ee20-e83f-44b2-a0f4-de7d9e319ecf",
+                  config: {
+                      position: "bottom-right"
+                  }
+              });
+          };
+      })(document, "script");
+    </script>
+
+    <script>
       function toggleFaq(element) {
           const content = element.querySelector('.faq-content');
           const icon = element.querySelector('.fa-chevron-down');
@@ -614,35 +603,6 @@
               content.style.maxHeight = '0px';
               icon.style.transform = 'rotate(0deg)';
           }
-      }
-
-      // Evita errores si alguien hace clic antes de que cargue la voz
-      window.startVapiCall = function() {
-          console.warn("Sincronizando audio, un segundo por favor...");
-      };
-    </script>
-
-    <script type="module">
-      import Vapi from "https://esm.sh/@vapi-ai/web@2.1.2";
-
-      // Tus credenciales actualizadas
-      const assistantId = "fc87ee20-e83f-44b2-a0f4-de7d9e319ecf";
-      const apiKey = "19824c02-6be2-4cac-b246-195201135083";
-
-      try {
-          const vapi = new Vapi(apiKey);
-
-          vapi.on('call-start', () => console.log('Santi: Micrófono abierto.'));
-          vapi.on('call-end', () => console.log('Santi: Llamada finalizada.'));
-          vapi.on('error', (e) => console.error('Error reportado:', e));
-
-          // Vinculamos de forma global para que tus botones de HTML lo detecten
-          window.startVapiCall = function() {
-              console.log("Conectando de forma segura al asistente...");
-              vapi.start(assistantId);
-          };
-      } catch (error) {
-          console.error("Fallo al conectar con los servidores de Vapi:", error);
       }
     </script>
 </body>
