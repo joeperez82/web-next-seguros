@@ -603,47 +603,43 @@
     </div>
 
     <!-- Scripts Funcionales e Integración de Vapi usando ES Modules -->
-    <script type="module">
-      // Importamos la versión estable del SDK de Vapi utilizando ES Modules directamente desde jsDelivr
-      import Vapi from "https://cdn.jsdelivr.net/npm/@vapi-ai/web@1.0.1/+esm";
-
+    <script>
+      // 1. Configuración de tus credenciales (REEMPLAZA CON TU LLAVE PÚBLICA)
       const assistantId = "198537b0-b0a3-403a-bf7e-adeeff1f919a";
-      const apiKey = "19824c02-6be2-4cac-b246-195201135083";
+      const apiKey = "19824c02-6be2-4cac-b246-195201135083"; // <-- ¡IMPORTANTE! Copia la "Public Key" desde tu Dashboard de Vapi
 
       let vapiInstance = null;
 
-      try {
-          // Inicializamos la conexión directamente
-          vapiInstance = new Vapi(apiKey);
-          console.log("Santi: El canal de voz se ha configurado.");
-      } catch (e) {
-          console.error("Error al inicializar Vapi:", e);
-      }
+      // 2. Carga asíncrona del SDK oficial de Vapi para entornos Web
+      (function (d, t) {
+          var g = document.createElement(t),
+              s = d.getElementsByTagName(t)[0];
+          g.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+          g.defer = true;
+          g.async = true;
+          s.parentNode.insertBefore(g, s);
 
-      // Hacemos que la función startVapiCall sea de ámbito global (window)
-      // para que siga respondiendo correctamente a los eventos onclick en el HTML.
+          g.onload = function () {
+              // Inicializamos el SDK de Vapi en la ventana global
+              console.log("Santi: El canal de voz se está vinculando...");
+          };
+      })(document, "script");
+
+      // 3. Función global para activar la llamada desde los botones
       window.startVapiCall = function() {
-          if (vapiInstance) {
+          // Comprobamos si el SDK de Vapi de ventana está disponible
+          if (window.vapiSDK && window.vapiSDK.run) {
               console.log("Conectando con el asistente Santi...");
-              vapiInstance.start(assistantId);
+              
+              // Ejecuta la llamada abriendo el canal de audio del navegador
+              vapiInstance = window.vapiSDK.run({
+                  apiKey: apiKey,
+                  assistant: assistantId
+              });
           } else {
-              console.error("No se pudo iniciar la conversación de voz porque la instancia no está activa.");
+              console.error("El SDK de Vapi aún no se ha cargado en el navegador.");
           }
       };
-
-      if (vapiInstance) {
-          vapiInstance.on('call-start', () => {
-              console.log('Conversación de voz con Santi iniciada.');
-          });
-
-          vapiInstance.on('call-end', () => {
-              console.log('Conversación con Santi finalizada.');
-          });
-
-          vapiInstance.on('error', (err) => {
-              console.error('Error de voz reportado por el asistente:', err);
-          });
-      }
     </script>
 
     <!-- Script clásico para elementos de UI que no requieren ES Modules -->
