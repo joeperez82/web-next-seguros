@@ -602,103 +602,59 @@
     </div>
 
     <!-- Scripts Funcionales e Integración de Vapi usando ES Modules -->
-    <script
-      src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js"
-      defer
-      async
-    </script>
+   <script src="https://cdn.jsdelivr.net/npm/@vapi-ai/web@1.0.1/dist/index.umd.min.js"></script>
 
     <script>
-      // 1. Configuración de credenciales de Next Seguros
+      // 2. Credenciales de Next Seguros
       const assistantId = "fc87ee20-e83f-44b2-a0f4-de7d9e319ecf";
       const apiKey = "19824c02-6be2-4cac-b246-195201135083";
 
-      // 2. Inicialización oficial de Vapi al cargar la página
-      window.addEventListener('load', () => {
-          if (window.vapiSDK && window.vapiSDK.run) {
-              window.vapiSDK.run({
-                  apiKey: apiKey,
-                  assistant: assistantId,
-                  config: {
-                      // Mantenemos la posición pero ocultamos el botón nativo feo de Vapi
-                      // para usar tu propio diseño premium de Santi
-                      position: "bottom-right"
-                  }
-              });
-              console.log("SDK de Vapi inicializado con éxito.");
-          }
-      });
+      let vapiInstance = null;
 
-      // 3. Función vinculada a tus botones personalizados (onclick="startVapiCall()")
-      window.startVapiCall = function() {
-          // Buscamos el botón nativo que inyecta Vapi en el DOM y le hacemos clic simulado
-          const vapiButton = document.getElementById('vapi-support-btn') || document.querySelector('.vapi-btn') || document.querySelector('[id^="vapi-"]');
-          
-          if (vapiButton) {
-              console.log("Activando asistente de voz Santi...");
-              vapiButton.click();
-          } else {
-              // Si el script tarda un poco en renderizar el botón de fondo, usamos el método directo
-              if (window.vapiSDK && window.vapiSDK.open) {
-                  window.vapiSDK.open();
+      // 3. Inicialización segura del canal de voz
+      function initVapi() {
+          try {
+              if (typeof Vapi !== 'undefined') {
+                  vapiInstance = new Vapi(apiKey);
+                  console.log("Santi: Sistema de voz inicializado con éxito.");
+                  
+                  // Escucha de eventos para depuración
+                  vapiInstance.on('call-start', () => console.log('Llamada con Santi iniciada en vivo.'));
+                  vapiInstance.on('call-end', () => console.log('Llamada con Santi finalizada.'));
+                  vapiInstance.on('error', (err) => console.error('Error en el agente de voz:', err));
               } else {
-                  console.warn("El asistente aún se está emparejando. Por favor, espera un segundo.");
+                  console.error("El SDK de Vapi no está disponible en el navegador.");
+              }
+          } catch (error) {
+              console.error("Error al conectar con la infraestructura de Vapi:", error);
+          }
+      }
+
+      // Aseguramos que se inicialice en cuanto la página esté lista
+      if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initVapi);
+      } else {
+          initVapi();
+      }
+
+      // 4. Función de activación vinculada a tus botones (onclick="startVapiCall()")
+      window.startVapiCall = function() {
+          if (vapiInstance) {
+              console.log("Conectando con el asistente Santi... Abriendo micrófono.");
+              vapiInstance.start(assistantId);
+          } else {
+              console.warn("Reintentando conexión con Santi...");
+              if (typeof Vapi !== 'undefined') {
+                  vapiInstance = new Vapi(apiKey);
+                  vapiInstance.start(assistantId);
+              } else {
+                  alert("El asistente de voz se está sincronizando. Por favor, espera 2 segundos e inténtalo de nuevo.");
               }
           }
       };
     </script>
 
     <script>
-      // Lógica de apertura y cierre de Preguntas Frecuentes (FAQ)
-      function toggleFaq(element) {
-          const content = element.querySelector('.faq-content');
-          const icon = element.querySelector('.fa-chevron-down');
-          
-          if (content.style.maxHeight === '0px' || !content.style.maxHeight) {
-              content.style.maxHeight = content.scrollHeight + 'px';
-              icon.style.transform = 'rotate(180deg)';
-          } else {
-              content.style.maxHeight = '0px';
-              icon.style.transform = 'rotate(0deg)';
-          }
-      }
-    </script>
-
-    <script>
-      // Lógica de apertura y cierre de Preguntas Frecuentes (FAQ)
-      function toggleFaq(element) {
-          const content = element.querySelector('.faq-content');
-          const icon = element.querySelector('.fa-chevron-down');
-          
-          if (content.style.maxHeight === '0px' || !content.style.maxHeight) {
-              content.style.maxHeight = content.scrollHeight + 'px';
-              icon.style.transform = 'rotate(180deg)';
-          } else {
-              content.style.maxHeight = '0px';
-              icon.style.transform = 'rotate(0deg)';
-          }
-      }
-    </script>
-
-    <script>
-      // Lógica de apertura y cierre de Preguntas Frecuentes (FAQ)
-      function toggleFaq(element) {
-          const content = element.querySelector('.faq-content');
-          const icon = element.querySelector('.fa-chevron-down');
-          
-          if (content.style.maxHeight === '0px' || !content.style.maxHeight) {
-              content.style.maxHeight = content.scrollHeight + 'px';
-              icon.style.transform = 'rotate(180deg)';
-          } else {
-              content.style.maxHeight = '0px';
-              icon.style.transform = 'rotate(0deg)';
-          }
-      }
-    </script>
-
-    <!-- Script clásico para elementos de UI que no requieren ES Modules -->
-    <script>
-      // Lógica de Preguntas Frecuentes
       function toggleFaq(element) {
           const content = element.querySelector('.faq-content');
           const icon = element.querySelector('.fa-chevron-down');
@@ -713,4 +669,3 @@
       }
     </script>
 </body>
-</html>
